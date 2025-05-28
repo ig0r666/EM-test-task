@@ -1,0 +1,9 @@
+log_level: DEBUG
+db_address: postgres://postgres:password@postgres:5432/postgres
+http:
+  address: ":8080"
+  timeout: 5s
+api:
+  age_url: agify.io
+  gender_url: genderize.io
+  nation_url: nationalize.io

@@ -1,0 +1,13 @@
+FROM golang:1.23 AS build
+
+COPY go.mod go.sum /src/
+COPY testtask /src/testtask
+
+ENV CGO_ENABLED=0
+RUN cd /src && go build -o /testtask testtask/main.go
+
+FROM alpine:3.20
+
+COPY --from=build /testtask /testtask
+
+ENTRYPOINT [ "/testtask" ]

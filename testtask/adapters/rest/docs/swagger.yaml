@@ -1,0 +1,178 @@
+basePath: /
+definitions:
+  EMtask_testtask_core.Person:
+    properties:
+      age:
+        example: 40
+        type: integer
+      gender:
+        example: male
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
+        example: Dmitry
+        type: string
+      nationality:
+        example: RU
+        type: string
+      patronymic:
+        example: Vasilevich
+        type: string
+      surname:
+        example: Ushakov
+        type: string
+    type: object
+  EMtask_testtask_core.PersonRequest:
+    properties:
+      name:
+        example: Dmitry
+        type: string
+      patronymic:
+        example: Vasilevich
+        type: string
+      surname:
+        example: Ushakov
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API для управления данными людей с обогащением информации
+  title: Effective Mobile test task
+paths:
+  /people:
+    get:
+      description: Возвращает список людей
+      parameters:
+      - description: Фильтр по возрасту
+        in: query
+        name: age
+        type: string
+      - description: Фильтр по полу (male/female)
+        in: query
+        name: gender
+        type: string
+      - description: Фильтр по национальности
+        in: query
+        name: nationality
+        type: string
+      - description: Лимит записей (по умолчанию 10)
+        in: query
+        name: limit
+        type: string
+      - description: Смещение (по умолчанию 0)
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/EMtask_testtask_core.Person'
+            type: array
+        "500":
+          description: Internal Server Error
+      summary: Получить список людей
+      tags:
+      - people
+    post:
+      consumes:
+      - application/json
+      description: Создает запись с автоматическим обогащением данных (возраст, пол,
+        национальность)
+      parameters:
+      - description: Данные для создания
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/EMtask_testtask_core.PersonRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/EMtask_testtask_core.Person'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Создать человека
+      tags:
+      - people
+  /person:
+    delete:
+      parameters:
+      - description: ID человека
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Удалить человека
+      tags:
+      - people
+    get:
+      parameters:
+      - description: ID человека
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/EMtask_testtask_core.Person'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Получить данные человека
+      tags:
+      - people
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Обновляемые данные
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/EMtask_testtask_core.Person'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Обновить данные человека
+      tags:
+      - people
+swagger: "2.0"

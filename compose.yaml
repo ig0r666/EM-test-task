@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  testtask:
+    image: testtask:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.testtask
+    container_name: testtask
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./testtask/config.yaml:/config.yaml
+    environment:
+      - ADDRESS=:8080
+      - LOG_LEVEL=DEBUG
+      - AGE_URL=api.agify.io
+      - GENDER_URL=api.genderize.io
+      - NATION_URL=api.nationalize.io
+      - DB_ADDRESS=postgres://postgres:password@postgres:5432/postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+volumes:
+  postgres:
